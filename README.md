@@ -19,4 +19,9 @@ yarn run start
 ```sh
 yarn run test
 ```
-# DersProgrami
+
+## Run build
+
+```sh
+yarn build or yarn build-electron
+```
