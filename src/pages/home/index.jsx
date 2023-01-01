@@ -35,7 +35,7 @@ function Home() {
       }}
     >
       <div style={{ height: 500, width: "55%", marginRight: "5%" }}>
-        <h1>Günün Program</h1>
+        <h1>Günün Programı</h1>
         <DataGrid
           rows={data}
           columns={columns}
@@ -54,11 +54,11 @@ function Home() {
         data.length > 0 &&
           data.map((lesson) => {
             let timediff = moment().set({hour: lesson.starttime.substring(0, 2), minute: lesson.starttime.substring(3, 5), second: lesson.starttime.substring(6, 8)}).diff(moment(), "seconds");
-            timediff > 0 &&
-              setTimeout(function () {
-                setStart(true);
-                setPlay(true);
-              }, timediff * 1000);
+              timediff > 0 &&
+                setTimeout(function () {
+                  setStart(true);
+                  setPlay(true);
+                }, timediff * 1000);
           })
       }
       {

@@ -14,6 +14,10 @@ router.post('/register', usersRoutes.userCreate)
 
 router.post('/control', usersRoutes.userControl)
 
+router.put('/changePassword', usersRoutes.userChangePassword)
+
+router.put('/userinformation', usersRoutes.userChangeInformation)
+
 // router.put('/delete', booksRoutes.booksDelete)
 
 // router.put('/reset', booksRoutes.booksReset)

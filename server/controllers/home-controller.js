@@ -4,7 +4,7 @@ const knex = require('../db')
 // Retrieve all books
 exports.userAll = async (req, res) => {
   // Get all books from database
-  knex
+  await knex
     .select('*') // select all records
     .from('users') // from 'books' table
     .then(userData => {
@@ -13,6 +13,6 @@ exports.userAll = async (req, res) => {
     })
     .catch(err => {
       // Send a error message in response
-      res.json({ message: `There was an error retrieving books: ${err}` })
+      res.status(404).json({ message: `There was an error retrieving books: ${err}` })
     })
 }

@@ -1,13 +1,23 @@
-import React, { lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { lazy, useEffect } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 export const AppLayout = lazy(() => import("../layout"));
 export const Login = lazy(() => import("../pages/auth/login"));
 export const Register = lazy(() => import("../pages/auth/register"));
 export const Home = lazy(() => import("../pages/home"));
 export const Program = lazy(() => import("../pages/program"));
+export const Settings = lazy(() => import("../pages/settings"));
 
 const AppRoutes = () => {
+  let navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("loginuser")) {
+      return navigate('/home')
+    } else localStorage.removeItem("loginuser");
+  }, [localStorage.getItem("loginuser")]);
+
+
   return (
     <Routes>
       {["/", "login"].map((path) => (
@@ -17,6 +27,7 @@ const AppRoutes = () => {
       <Route path="/" element={<AppLayout />}>
         <Route index path="home" element={<Home />} />
         <Route path="program" element={<Program />} />
+        <Route path="settings" element={<Settings />} />
       </Route>
     </Routes>
   );

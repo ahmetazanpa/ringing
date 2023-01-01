@@ -1,13 +1,14 @@
 {
-  "name": "ders-programi",
+  "name": "gunluk-program",
   "version": "0.1.4",
-  "description": "Ders Programı",
+  "description": "Günlük Program App",
   "author": {
-    "name": "Ders Programi App"
+    "name": "Günlük Program App"
   },
   "build": {
-    "productName": "Ders Programı",
-    "appId": "com.dersprogrami.app",
+    "appId": "com.gunlukprogram.app",
+    "productName": "Günlük Program",
+    "copyright": "Günlük Program Copyright",
     "files": [
       "server/**/*",
       "dist/**/*",
@@ -22,18 +23,20 @@
       "icon": "build/icons/icon.ico"
     },
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "build"
     },
     "extraMetadata": {
       "main": "build/electron.js"
     }
   },
+  "homepage": "./",
+  "main": "public/electron.js",
+  "proxy": "http://localhost:3001",
+  "private": true,
+  "license": "MIT",
   "eslintConfig": {
     "extends": "react-app"
   },
-  "homepage": "./",
-  "private": true,
-  "license": "MIT",
   "keywords": [
     "app",
     "lesson",
@@ -54,16 +57,19 @@
     "npm": ">=6.0",
     "yarn": ">=1.1.0"
   },
-  "main": "public/electron.js",
-  "proxy": "http://localhost:3001",
+  "overrides": {
+    "react-error-overlay": "6.0.9"
+  },
   "scripts": {
     "start-server": "nodemon --exec electron server/server.js --watch server/*",
     "start-front": "react-scripts start",
     "build-front": "react-scripts build",
-    "build-electron": "electron-builder",
     "build-script": "node ./buildScript",
-    "build": "yarn build-front && yarn rebuild && yarn build-electron",
+    "build-electron": "yarn electron-builder install-app-deps && electron-builder -w",
+    "build-packager": "electron-packager . --overwrite Günlük-Program --platform win32 --arch x64 --out dist/ --version-string.ProductName=\"Günlük Program\"",
+    "postinstall": "cd node_modules/sqlite3 && yarn add nan && yarn electron-packager && node-gyp configure reinstall --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.4-win32-x64 && node-gyp rebuild --target=1.4.13 --arch=x64 --target_platform=win32 --dist-url=https://atom.io/download/atom-shell --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.4-win32-x64 --update-binary",
     "rebuild": "electron-rebuild -f -w sqlite3",
+    "package": "electron-builder build --win -c.extraMetadata.main=build/electron.js --publish never",
     "electron:build": "yarn build && electron-builder -c.extraMetadata.main=build/electron.js",
     "start": "concurrently \"cross-env BROWSER=none yarn start-server\" \"yarn start-front\" \"wait-on http://localhost:3000 && electron .\" --kill-others --kill-others-on-fail",
     "test": "react-scripts test --env=jsdom",
@@ -91,10 +97,12 @@
     "helmet": "6.0.1",
     "knex": "0.20.13",
     "moment": "^2.29.4",
+    "node-gyp-build": "^4.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-player": "^2.11.0",
     "react-router-dom": "^6.6.1",
+    "sqlite3": "^5.1.4",
     "styled-components": "^5.3.6",
     "yup": "^0.32.11"
   },
@@ -105,10 +113,12 @@
     "concurrently": "5.1.0",
     "electron": "^22.0.0",
     "electron-builder": "^23.6.0",
+    "electron-packager": "^17.1.1",
     "electron-rebuild": "^3.2.9",
+    "electron-winstaller": "^5.1.0",
     "nodemon": "2.0.3",
+    "react-error-overlay": "6.0.11",
     "react-scripts": "3.4.1",
-    "sqlite3": "^5.1.4",
     "wait-on": "^7.0.1"
   }
 }

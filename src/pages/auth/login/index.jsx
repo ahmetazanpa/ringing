@@ -1,11 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Avatar, Button, CssBaseline, TextField, Grid, Box, Typography, Container, InputAdornment, IconButton } from "@mui/material";
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff, LockOutlined } from '@mui/icons-material';
 import { useFormik } from "formik";
 import * as yup from "yup";
 import axios from "axios";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Copyright from "../../../components/copyright";
 
 const validationSchema = yup.object({
@@ -22,12 +21,6 @@ const validationSchema = yup.object({
 const SignIn = () => {
   let navigate = useNavigate();
 
-  useEffect(() => {
-    if (localStorage.getItem("loginuser")) {
-      return navigate('/home')
-    } else localStorage.removeItem("loginuser");
-  }, [localStorage.getItem("loginuser")]);
-
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -38,16 +31,15 @@ const SignIn = () => {
     onSubmit: (values) => {
       const { email, password } = values;
 
-      axios
-        .post("http://localhost:3001/users/login", { email, password })
+      axios.post("http://localhost:3001/auth/login", { email, password })
         .then((res) => {
-          if (res.data) {
+          if (res) {
             console.log(res.data.message);
-            localStorage.setItem("loginuser", JSON.stringify({ companyname: res.data.companyname, username: res.data.username, email: res.data.email }) );
+            localStorage.setItem("loginuser", JSON.stringify({ id: res.data.id, companyname: res.data.companyname, username: res.data.username, email: res.data.email }) );
             navigate('/home')
           }
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error(err.response.data.message));
     },
   });
 
@@ -67,7 +59,7 @@ const SignIn = () => {
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-          <LockOutlinedIcon />
+          <LockOutlined />
         </Avatar>
         <Typography component="h1" variant="h5">
           Giriş Yap

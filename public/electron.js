@@ -2,18 +2,21 @@ const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
+// Set default port for express app
+const PORT = process.env.PORT || 3001
+
 let mainWindow;
 function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1400,
-        height: 800,
+        height: 820,
         minWidth: 1400,
-        minHeight: 800,
+        minHeight: 820,
         center: true,
         icon: "",
         autoHideMenuBar: isDev ? false : true,
         webPreferences:{
-            webSecurity: false,
+            webSecurity: true,
             nodeIntegration: false,
             worldSafeExecuteJavaScript: true,
             contextIsolation: true,
@@ -31,9 +34,13 @@ function createWindow() {
 
     if(isDev){
       mainWindow.webContents.openDevTools();
-    }else{
-      require('../server/server.js');
     }
+
+    const server = require('../server/server.js');
+    // Start express app
+    server.listen(PORT, function(req, res, next) {
+      console.log(`Server is running on: ${PORT}`)
+    })
 
     mainWindow.on("closed", () => (mainWindow = null));
 }
@@ -51,4 +58,3 @@ app.on("activate", () => {
       createWindow();
     }
 });
-

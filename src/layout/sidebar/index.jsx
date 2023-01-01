@@ -118,6 +118,7 @@ export default function SidebarMenu({ open, handleDrawerClose }) {
                 justifyContent: open ? 'initial' : 'center',
                 px: 2.5,
               }}
+              onClick={() => navigate('settings')}
             >
               <ListItemIcon
                 sx={{

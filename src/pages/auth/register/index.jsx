@@ -45,7 +45,7 @@ const Register = () => {
     onSubmit: (values) => {
       const { companyname, username, email, password, passwordRepeat } = values;
       if (companyname.length > 0 && username.length > 0 && email.length > 0 && password === passwordRepeat) {
-        let userControl = axios.post("http://localhost:3001/users/control", { email, username })
+        let userControl = axios.post("http://localhost:3001/auth/control", { email, username })
         .then((res) => {
           if (res) {
             console.log(res.data.message);
@@ -54,7 +54,7 @@ const Register = () => {
         })
 
         if(!userControl){
-          axios.post('http://localhost:3001/users/register', { companyname, username, email, password})
+          axios.post('http://localhost:3001/auth/register', { companyname, username, email, password})
             .then(res => {
               if(res){
                 console.log(res)

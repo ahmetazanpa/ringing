@@ -8,7 +8,7 @@ function getDayName(locale)
 }
 
 exports.getAllPrograms = async (req, res) => {
-  knex
+  await knex
     .select(
       knex.raw(`json_object('id', p3.id, 'programname', p3.programname, 'programday', p3.programday, 'username', p3.username,
       'programdetails', (SELECT json_group_array(json_object('id', p4.id, 'lessonname', p4.lessonname, 'notificationfile', p4.notificationfile, 'starttime', p4.starttime, 'endtime', p4.endtime))
@@ -21,12 +21,12 @@ exports.getAllPrograms = async (req, res) => {
     })
     .catch((err) => {
       // Send a error message in response
-      res.json({ message: `Tüm programa ulaşılamadı! Hata: ${err}` });
+      res.status(404).json({ message: `Tüm programa ulaşılamadı!`, err: `Hata: ${err}` });
     });
 };
 
 exports.getTodayPrograms = async (req, res) => {
-  knex
+  await knex
     .select("*")
     .from("programs")
     .innerJoin("programdetails", "programs.id", "programdetails.programid")
@@ -37,12 +37,12 @@ exports.getTodayPrograms = async (req, res) => {
     })
     .catch((err) => {
       // Send a error message in response
-      res.json({ message: `Günün programı datasına ulaşılamadı! Hata: ${err}` });
+      res.status(404).json({ message: `Günün programı datasına ulaşılamadı!`, err: `Hata: ${err}` });
     });
 };
 
 exports.insertProgram = async (req, res) => {
-  knex("programs")
+  await knex("programs")
     .insert({
       // insert new record, a user
       programname: req.body.title,
@@ -55,12 +55,12 @@ exports.insertProgram = async (req, res) => {
     })
     .catch((err) => {
       // Send a error message in response
-      res.json({ message: `Program eklenemedi! Hata: ${err}` });
+      res.status(404).json({ message: `Program eklenemedi!`, err: `Hata: ${err}` });
     });
 };
 
 exports.deleteProgram = async (req, res) => {
-  knex("programs")
+  await knex("programs")
     .where('id', req.params.id)
     .join('programs', 'programs.id', 'programdetails.programid')
     .del()
@@ -70,6 +70,6 @@ exports.deleteProgram = async (req, res) => {
     })
     .catch((err) => {
       // Send a error message in response
-      res.json({ message: `Program silinemedi! Hata: ${err}` });
+      res.status(404).json({ message: `Program silinemedi!`, err: `Hata: ${err}` });
     });
 };

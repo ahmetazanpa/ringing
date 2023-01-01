@@ -2,8 +2,8 @@
 const knex = require("../db");
 
 exports.insertProgramDetails = async (req, res) => {
-  req.body.formValues.map(field => {
-    knex("programdetails")
+  await req.body.formValues.map(field => {
+  knex("programdetails")
     .insert({
       // insert new record, a user
       lessonname: field.lessonname,
@@ -18,7 +18,7 @@ exports.insertProgramDetails = async (req, res) => {
     })
     .catch((err) => {
       // Send a error message in response
-      res.json({ message: `Program Details eklenemedi! Hata: ${err}` });
+      res.status(404).json({ message: `Program Details eklenemedi!`, err: `Hata: ${err}` });
     });
   })
 };
