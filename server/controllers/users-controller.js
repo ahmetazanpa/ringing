@@ -10,11 +10,11 @@ exports.userLogin = async (req, res) => {
     .first()
     .then((data) => {
       // Send a success message in response
-      res.json({ message: `${data.email} Kullanıcı girişi başarılı.`, id: data.id, companyname: data.companyname, username: data.username, email: data.email })
+      res.json({ message: `Kullanıcı Girişi Başarılı.`, id: data.id, companyname: data.companyname, username: data.username, email: data.email })
     })
     .catch(err => {
       // Send a error message in response
-      res.status(404).json({ message: `Kullanıcı adı veya şifre hatalı!`, err: `Hata: ${err}` })
+      res.status(404).json({ message: `Kullanıcı Adı veya Şifre Hatalı!`, err: `Hata: ${err}` })
     })
 }
 
@@ -29,11 +29,11 @@ exports.userCreate = async (req, res) => {
     })
     .then((data) => {
       // Send a success message in response
-      res.json({ message: `Kullanıcı oluşturuldı` })
+      res.json({ message: `Kullanıcı Oluşturuldı` })
     })
     .catch(err => {
       // Send a error message in response
-      res.status(404).json({ message: `Kullanıcı oluşturulamadı!`, err: `Hata: ${err}` })
+      res.status(404).json({ message: `Kullanıcı Oluşturulamadı!`, err: `Hata: ${err}` })
     })
 }
 
@@ -43,15 +43,14 @@ exports.userControl = async (req, res) => {
     .select("*")
     .where("email", req.body.email)
     .orWhere("username", req.body.username)
-    .first()
     .then((data) => {
       // Send a success message in response
-      if(req.body.email === data.email) return res.json({ message: `${req.body.email} mail hesabı zaten mevcut! ` })
-      else return res.json({ message: `${req.body.username} kullanıcı adı zaten mevcut! ` })
+      if(req.body.email === data[0].email) return res.json({ message: `${req.body.email} E-Mail Hesabı Zaten Mevcut! ` })
+      if(req.body.username === data[0].username) return res.json({ message: `${req.body.username} Kullanıcı Adı Zaten Mevcut! ` })
     })
     .catch(err => {
       // Send a error message in response
-      res.status(404).json({ message: `Kullanıcı kontrolünde hata oluştu!`, err: `Hata: ${err}` })
+      res.json({ message: `Kullanıcı kontrolünde hata oluştu!`, err: `Hata: ${err}`, isRegister: true })
     })
 }
 

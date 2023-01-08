@@ -13,9 +13,9 @@ const AppRoutes = () => {
 
   useEffect(() => {
     if (localStorage.getItem("loginuser")) {
-      return navigate('/home')
-    } else localStorage.removeItem("loginuser");
-  }, [localStorage.getItem("loginuser")]);
+      navigate('/home')
+    }else localStorage.removeItem("loginuser");
+  }, [])
 
 
   return (

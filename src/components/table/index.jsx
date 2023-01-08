@@ -33,7 +33,7 @@ export default function DataTable() {
       if (res) {
         let programs = [];
         res.data.map((r) => {
-          programs.push(JSON.parse(Object.getOwnPropertyDescriptor(r, Object.keys(r)).value));
+          return programs.push(JSON.parse(Object.getOwnPropertyDescriptor(r, Object.keys(r)).value));
         });
         setData(programs);
       }

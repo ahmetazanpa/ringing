@@ -1,12 +1,15 @@
-import * as React from 'react';
+import React from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import { Avatar, Button, CssBaseline, InputAdornment, IconButton, TextField, Grid, Box, Typography, Container } from '@mui/material';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Visibility, VisibilityOff, LockOutlined } from '@mui/icons-material';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios'
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { ToastContainer, toast } from 'react-toastify';
 import Copyright from '../../../components/copyright';
+import { db } from "../../../firebase";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+
 
 const validationSchema = yup.object({
   companyname: yup
@@ -27,10 +30,47 @@ const validationSchema = yup.object({
     .string('Parola Tekrarını Giriniz')
     .oneOf([yup.ref('password'), null], 'Parolalar aynı olmalıdır')
     .required('*Parola Alanı Zorunlu'),
+  licenseKey: yup
+    .string('Lisans Key Giriniz')
+    .min(14, 'Parola minimum 14 karakter olmalı')
+    .required('*Lisans Key Alanı Zorunlu'),
 });
 
 const Register = () => {
   let navigate = useNavigate();
+
+  const notify_err_license_key = () => {
+    toast.error("Lisans Key Hatalı !");
+  };
+
+  const notify_err_account = (message) => {
+    toast.error(message);
+  };
+
+  const notify_success_account = (message) => {
+    toast.success(message);
+  };
+
+  async function keys(licenseKey){
+    return await getDocs(collection(db, "keys")).then(key => {
+      return key.docs.map((document) => {
+        const license = document.data().uuid.find(element => element.key === licenseKey && element.licenseCount > 0);
+        return license;
+      })
+    })
+  }
+
+  async function licenseUpdateCount(licenseKey){
+    return await getDocs(collection(db, "keys")).then(key => {
+      return key.docs.map((document) => {
+        const license = document.data().uuid.find(element => element.key === licenseKey);
+        if(license !== null || undefined){
+          updateDoc(doc(db, "keys", document.id), { 'uuid': [{key: license.key, licenseCount: license.licenseCount - 1 }] })
+        }
+        return license;
+      })
+    })
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -39,39 +79,46 @@ const Register = () => {
       email: '',
       password: '',
       passwordRepeat: '',
+      licenseKey: '',
       showPassword: false,
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      const { companyname, username, email, password, passwordRepeat } = values;
-      if (companyname.length > 0 && username.length > 0 && email.length > 0 && password === passwordRepeat) {
-        let userControl = axios.post("http://localhost:3001/auth/control", { email, username })
-        .then((res) => {
-          if (res) {
-            console.log(res.data.message);
-            return true;
-          }else return false;
-        })
-
-        if(!userControl){
-          axios.post('http://localhost:3001/auth/register', { companyname, username, email, password})
-            .then(res => {
-              if(res){
-                console.log(res)
-                navigate("/login")
+      const { licenseKey, companyname, username, email, password } = values;
+      keys(licenseKey).then(result => {
+        if (result.length > 0 && result[0] !== undefined){
+            axios.post("http://localhost:3001/auth/control", { email, username })
+            .then((controlRes) => {
+              if (controlRes.data.isRegister) {
+                axios.post('http://localhost:3001/auth/register', { companyname, username, email, password })
+                .then((registerRes) => {
+                  if(registerRes.data){
+                    notify_success_account(registerRes.data.message);
+                    licenseUpdateCount(licenseKey)
+                    navigate("/login")
+                  }
+                }).catch((err) => { console.error(err)  })
+              }else {
+                console.log(controlRes.data.message);
+                notify_err_account(controlRes.data.message);
               }
-            }).catch((err) => console.error(err))
-        }
-      }
-    },
+            }).catch((err) => { console.error(err); })
+          }
+          else{
+            console.error("Lisans Key Hatalı!");
+            notify_err_license_key();
+          }
+      });
+    }
   });
 
   const handleClick = () => {
-    formik.setValues({ ...formik.values, "showPassword": !formik.values.showPassword });
+    formik.setValues({ "showPassword": !formik.values.showPassword });
   }
 
   return (
     <Container component="main" maxWidth="xs">
+      <ToastContainer />
       <CssBaseline />
       <Box
         sx={{
@@ -82,12 +129,26 @@ const Register = () => {
         }}
       >
         <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-          <LockOutlinedIcon />
+          <LockOutlined />
         </Avatar>
         <Typography component="h1" variant="h5">
           Kaydol
         </Typography>
         <form onSubmit={formik.handleSubmit}>
+          <TextField
+            margin="normal"
+            autoFocus
+            fullWidth
+            id="licenseKey"
+            label="Lisans Key"
+            name="licenseKey"
+            autoComplete="licenseKey"
+            inputMode="licenseKey"
+            value={formik.values.licenseKey}
+            onChange={formik.handleChange}
+            error={formik.touched.licenseKey && Boolean(formik.errors.licenseKey)}
+            helperText={formik.touched.licenseKey && formik.errors.licenseKey}
+          />
           <TextField
             margin="normal"
             fullWidth
@@ -96,7 +157,6 @@ const Register = () => {
             name="companyname"
             autoComplete="companyname"
             inputMode="text"
-            autoFocus
             value={formik.values.companyname}
             onChange={formik.handleChange}
             error={formik.touched.companyname && Boolean(formik.errors.companyname)}

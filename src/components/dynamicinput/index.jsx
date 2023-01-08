@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, TextField } from "@mui/material";
-import { Add, Delete, AudioFile } from "@mui/icons-material";
+import { Add, Delete } from "@mui/icons-material"; //AudioFile
 //import * as yup from 'yup';
 //import { useFormik } from 'formik';
 import axios from "axios";
@@ -27,7 +27,7 @@ const defaultNumberOfFields = 1;
 const DynamicInput = ({ title, days }) => {
   const [numberOfFields, setNumberOfFields] = useState(defaultNumberOfFields);
   const [formValues, setFormValues] = useState([{ lessonname: "", notificationfile: "", starttime: new Date(), endtime: new Date() }]);
-  const [username, _] = useState(JSON.parse(localStorage.getItem("loginuser")).username);
+  const username = JSON.parse(localStorage.getItem("loginuser")).username;
   // const validationSchema = yup.object({
   //     notificationfile: yup
   //         .string('Ses Dosyasını Seçiniz')E

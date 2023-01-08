@@ -97,7 +97,7 @@ export default function SidebarMenu({ open, handleDrawerClose }) {
                 justifyContent: open ? 'initial' : 'center',
                 px: 2.5,
               }}
-              onClick={() => navigate('program')}
+              onClick={() => navigate('/program')}
             >
               <ListItemIcon
                 sx={{
@@ -118,7 +118,7 @@ export default function SidebarMenu({ open, handleDrawerClose }) {
                 justifyContent: open ? 'initial' : 'center',
                 px: 2.5,
               }}
-              onClick={() => navigate('settings')}
+              onClick={() => navigate('/settings')}
             >
               <ListItemIcon
                 sx={{

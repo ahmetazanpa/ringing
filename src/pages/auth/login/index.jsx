@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { Avatar, Button, CssBaseline, TextField, Grid, Box, Typography, Container, InputAdornment, IconButton } from "@mui/material";
 import { Visibility, VisibilityOff, LockOutlined } from '@mui/icons-material';
 import { useFormik } from "formik";
+import { ToastContainer, toast } from 'react-toastify';
 import * as yup from "yup";
 import axios from "axios";
 import Copyright from "../../../components/copyright";
@@ -21,6 +22,14 @@ const validationSchema = yup.object({
 const SignIn = () => {
   let navigate = useNavigate();
 
+  const notify_err_login = (message) => {
+    toast.error(message);
+  };
+
+  const notify_success_login = (message) => {
+    toast.success(message);
+  };
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -33,13 +42,14 @@ const SignIn = () => {
 
       axios.post("http://localhost:3001/auth/login", { email, password })
         .then((res) => {
-          if (res) {
+          if (res.data) {
             console.log(res.data.message);
+            notify_success_login(res.data.message);
             localStorage.setItem("loginuser", JSON.stringify({ id: res.data.id, companyname: res.data.companyname, username: res.data.username, email: res.data.email }) );
             navigate('/home')
           }
         })
-        .catch((err) => console.error(err.response.data.message));
+        .catch((err) => { console.error(err.response.data.message); notify_err_login(err.response.data.message) });
     },
   });
 
@@ -49,6 +59,7 @@ const SignIn = () => {
 
   return (
     <Container component="main" maxWidth="xs">
+      <ToastContainer />
       <CssBaseline />
       <Box
         sx={{

@@ -52,7 +52,7 @@ function Home() {
       </div>
       {
         data.length > 0 &&
-          data.map((lesson) => {
+          data.forEach((lesson) => {
             let timediff = moment().set({hour: lesson.starttime.substring(0, 2), minute: lesson.starttime.substring(3, 5), second: lesson.starttime.substring(6, 8)}).diff(moment(), "seconds");
               timediff > 0 &&
                 setTimeout(function () {

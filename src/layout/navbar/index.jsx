@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import { Box, CssBaseline, Toolbar, Typography, IconButton, MenuItem, Menu } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import MuiAppBar from '@mui/material/AppBar';
@@ -28,9 +28,9 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function NavbarMenu() {
-  const [auth, _] = React.useState(JSON.parse(localStorage.getItem("loginuser")));
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false);
+  const auth = JSON.parse(localStorage.getItem("loginuser"));
 
   let navigate = useNavigate();
   const handleMenu = (event) => {
