@@ -5,7 +5,7 @@ const isDev = require("electron-is-dev");
 // Get the location of database.sqlite file
 // const dbPath = path.resolve(__dirname, "db/database.sqlite");
 
-const dbPath = path.resolve(__dirname, isDev ? 'db/database.sqlite' : ':memory:')
+const dbPath = path.resolve(`${__dirname}/db/database.sqlite`.replace('app.asar', 'app.asar.unpacked'));
   // isDev
   //   ? path.resolve(__dirname, 'db/database.sqlite') // my root folder if in dev mode
   //   : path.resolve(__dirname, 'dist/database.sqlite') // the resources path if in production build

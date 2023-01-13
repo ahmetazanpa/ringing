@@ -19,8 +19,12 @@
       "renderer/**/*"
     ],
     "win": {
-      "target": "nsis",
+      "target": "portable",
       "icon": "build/favicon.ico"
+    },
+    "portable": {
+      "unicode": false,
+      "artifactName": "gunlukprogram.exe"
     },
     "directories": {
       "buildResources": "build"
@@ -71,7 +75,7 @@
     "postinstall": "cd node_modules/sqlite3 && yarn add nan && yarn electron-packager && node-gyp configure reinstall --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.4-win32-x64 && node-gyp rebuild --target=1.4.13 --arch=x64 --target_platform=win32 --dist-url=https://atom.io/download/atom-shell --module_name=node_sqlite3 --module_path=../lib/binding/electron-v1.4-win32-x64 --update-binary",
     "package": "electron-builder build --win -c.extraMetadata.main=build/electron.js --publish never",
     "electron:build": "electron-builder -c.extraMetadata.main=build/electron.js",
-    "start": "concurrently \"cross-env BROWSER=none yarn start-server\" \"yarn start-front\" \"wait-on http://localhost:3000 && electron .\" --kill-others --kill-others-on-fail",
+    "start": "concurrently \"cross-env BROWSER=none yarn start-front\" \"yarn start-server\" \"wait-on http://localhost:3000 && electron .\" --kill-others --kill-others-on-fail",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
@@ -92,7 +96,6 @@
     "cross-env": "^7.0.3",
     "dayjs": "^1.11.7",
     "electron-is-dev": "^2.0.0",
-    "electron-squirrel-startup": "^1.0.0",
     "express": "4.18.2",
     "firebase": "^9.15.0",
     "formik": "^2.2.9",
@@ -116,7 +119,9 @@
     "concurrently": "5.1.0",
     "electron": "^22.0.0",
     "electron-builder": "^23.6.0",
+    "electron-packager": "^17.1.1",
     "electron-rebuild": "^3.2.9",
+    "electron-squirrel-startup": "^1.0.0",
     "electron-winstaller": "^5.1.0",
     "nodemon": "2.0.3",
     "react-error-overlay": "6.0.11",

@@ -6,40 +6,20 @@ import { Add, Delete } from "@mui/icons-material"; //AudioFile
 import axios from "axios";
 import { LocalizationProvider, TimePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { ToastContainer, toast } from 'react-toastify';
 import "dayjs/locale/tr";
 
 const maxInputFields = 10;
 const defaultNumberOfFields = 1;
 
-// const validationSchema = yup.object({
-//     text: yup.array().of(
-//         yup.object().shape({
-//             text: yup
-//                 .string("Etüt Dersini Giriniz")
-//                 .required('*Etüt Dersi Alanı Zorunlu'),
-//             time: yup
-//             .string('Zamanı Giriniz')
-//             .required('*Zaman Alanı Zorunlu'),
-//         }),
-//     ),
-// });
-
 const DynamicInput = ({ title, days }) => {
   const [numberOfFields, setNumberOfFields] = useState(defaultNumberOfFields);
   const [formValues, setFormValues] = useState([{ lessonname: "", notificationfile: "", starttime: new Date(), endtime: new Date() }]);
   const username = JSON.parse(localStorage.getItem("loginuser")).username;
-  // const validationSchema = yup.object({
-  //     notificationfile: yup
-  //         .string('Ses Dosyasını Seçiniz')E
-  //         .required('*Ses Dosyası Alanı Zorunlu'),
-  // });
 
-  // const formik = useFormik({
-  //     initialValues: {
-  //         notificationfile: '',
-  //     },
-  //     validationSchema: validationSchema,
-  // });
+  const notify_success_login = (message) => {
+    toast.success(message);
+  };
 
   let handleChange = (i, e) => {
     let newFormValues = [...formValues];
@@ -78,6 +58,8 @@ const DynamicInput = ({ title, days }) => {
           .then((resdetails) => {
             if (resdetails) {
               console.log(resdetails.data.message);
+              setFormValues([ ...formValues ])
+              notify_success_login(res.data.message);
             }
           });
           console.log(res.data.message);
@@ -88,6 +70,7 @@ const DynamicInput = ({ title, days }) => {
 
   return (
     <form onSubmit={handleSubmit}>
+      <ToastContainer />
       {formValues.map((element, index) => (
         <div style={{ textAlign: "center" }} key={index}>
           <TextField
